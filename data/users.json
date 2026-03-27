@@ -1,0 +1,68 @@
+[
+  {
+    "id": 1,
+    "username": "Toxilisk",
+    "displayName": "Toxilisk",
+    "password": "676752526969",
+    "role": "admin",
+    "verified": true,
+    "premium": true,
+    "banned": false,
+    "avatar": "",
+    "createdAt": 1774623171363,
+    "level": 900000000000000
+  },
+  {
+    "id": 2,
+    "username": "admin1",
+    "displayName": "admin1",
+    "password": "4653999",
+    "role": "moderator",
+    "verified": false,
+    "premium": false,
+    "banned": true,
+    "avatar": "",
+    "createdAt": 1774623171363,
+    "coins": 1.231213123123123e+41
+  },
+  {
+    "id": 3,
+    "username": "admin2",
+    "displayName": "admin2",
+    "password": "4653999",
+    "role": "admin",
+    "verified": false,
+    "premium": false,
+    "banned": true,
+    "avatar": "",
+    "createdAt": 1774623171363
+  },
+  {
+    "id": 4,
+    "username": "test",
+    "displayName": "test",
+    "password": "123",
+    "role": "user",
+    "verified": false,
+    "premium": false,
+    "banned": true,
+    "avatar": "",
+    "createdAt": 1774623171363,
+    "level": 44
+  },
+  {
+    "id": 5,
+    "username": "путин",
+    "displayName": "путин",
+    "password": "123",
+    "role": "user",
+    "verified": false,
+    "premium": false,
+    "banned": false,
+    "avatar": "",
+    "coins": 100,
+    "level": 1,
+    "gifts": [],
+    "createdAt": 1774636533839
+  }
+]
