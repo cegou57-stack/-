@@ -1,0 +1,16 @@
+{
+  "name": "Toxilisk Messenger",
+  "short_name": "Toxilisk",
+  "description": "Полноценный мессенджер с каналами, подарками и админкой",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0e1621",
+  "theme_color": "#2c7df7",
+  "icons": [
+    {
+      "src": "https://s10.iimage.su/s/27/gy0tHmGxULs5TllsSXdTv4Zo5UCO3r62Z5Dd2I399.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
