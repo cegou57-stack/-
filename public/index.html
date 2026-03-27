@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Toxilisk Messenger</title>
     <link rel="icon" type="image/png" href="https://s10.iimage.su/s/27/gy0tHmGxULs5TllsSXdTv4Zo5UCO3r62Z5Dd2I399.png">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: system-ui;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
             background: #0e1621;
             color: white;
             height: 100vh;
@@ -19,98 +20,139 @@
         .logo { text-align: center; margin-bottom: 20px; }
         .logo img { width: 60px; height: 60px; border-radius: 50%; }
         .logo h1 { font-size: 24px; margin-top: 10px; color: #2c7df7; }
-        .app {
-            width: 600px;
+        .app-container {
+            width: 700px;
             max-width: 100%;
             background: #17212b;
-            border-radius: 20px;
+            border-radius: 28px;
             padding: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
         }
         input, button {
-            padding: 10px;
-            border-radius: 20px;
+            padding: 12px 16px;
+            border-radius: 24px;
             border: none;
             font-size: 14px;
+            font-family: inherit;
         }
-        input { background: #242f3a; color: white; flex: 1; }
-        button { background: #2c7df7; color: white; cursor: pointer; }
-        .flex { display: flex; gap: 8px; flex-wrap: wrap; }
+        input { background: #242f3a; color: white; flex: 1; outline: none; }
+        input:focus { outline: 1px solid #2c7df7; }
+        button { background: #2c7df7; color: white; cursor: pointer; transition: 0.2s; font-weight: 500; }
+        button:hover { background: #1e6be0; transform: scale(0.98); }
+        .flex { display: flex; gap: 10px; flex-wrap: wrap; }
+        .tabs-auth { display: flex; gap: 10px; margin-bottom: 20px; background: #242f3a; border-radius: 30px; padding: 4px; }
+        .tab-auth { flex: 1; text-align: center; padding: 10px; border-radius: 26px; cursor: pointer; transition: 0.2s; font-weight: 500; }
+        .tab-auth.active { background: #2c7df7; color: white; }
         .contact, .channel {
             background: #242f3a;
-            padding: 10px;
-            border-radius: 12px;
-            margin: 5px 0;
+            padding: 12px;
+            border-radius: 16px;
+            margin: 6px 0;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: 0.1s;
         }
-        .contact:hover, .channel:hover { background: #2b5278; }
+        .contact:hover, .channel:hover { background: #2b5278; transform: translateX(4px); }
         .messages {
-            height: 300px;
+            height: 320px;
             overflow-y: auto;
             background: #0e1621;
-            border-radius: 12px;
-            padding: 10px;
-            margin: 10px 0;
+            border-radius: 20px;
+            padding: 12px;
+            margin: 12px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
         .message {
-            padding: 8px 12px;
-            border-radius: 18px;
-            margin: 5px 0;
+            padding: 8px 14px;
+            border-radius: 20px;
             max-width: 80%;
             word-wrap: break-word;
+            animation: fadeIn 0.2s ease;
         }
-        .outgoing { background: #2b5278; margin-left: auto; }
-        .incoming { background: #1e2a36; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .outgoing { background: #2b5278; margin-left: auto; border-bottom-right-radius: 4px; }
+        .incoming { background: #1e2a36; border-bottom-left-radius: 4px; }
         .voice-btn { background: #4a5c6c; font-size: 18px; }
         .voice-btn.recording { background: #e53935; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
-        .gift-item { display: inline-block; margin: 8px; text-align: center; cursor: pointer; padding: 12px; background: #242f3a; border-radius: 16px; }
-        .admin-section { border-bottom: 1px solid #2c3e4e; padding: 10px 0; }
-        .error { color: #e53935; margin-top: 10px; }
-        .verified { color: gold; }
-        .premium { color: #ffd700; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        .gift-item { display: inline-block; margin: 8px; text-align: center; cursor: pointer; padding: 12px; background: #242f3a; border-radius: 20px; transition: 0.1s; }
+        .gift-item:active { transform: scale(0.95); }
+        .admin-section { border-bottom: 1px solid #2c3e4e; padding: 12px 0; }
+        .error { color: #e53935; margin-top: 12px; text-align: center; }
+        .verified { color: #ffd700; }
+        .premium { color: #ffb74d; }
         .admin-btn { background: #e53935; margin-left: 8px; }
-        .tab { display: inline-block; padding: 8px 16px; cursor: pointer; border-radius: 20px; margin: 5px; background: #242f3a; }
+        .tab { display: inline-block; padding: 8px 20px; cursor: pointer; border-radius: 30px; margin: 4px; background: #242f3a; transition: 0.2s; }
         .tab.active { background: #2c7df7; }
-        .role-badge { font-size: 10px; padding: 2px 6px; border-radius: 10px; background: #2c7df7; margin-left: 5px; }
+        .role-badge { font-size: 11px; padding: 2px 8px; border-radius: 20px; background: #2c7df7; margin-left: 6px; }
+        .message-time { font-size: 10px; color: #8e9eab; margin-top: 4px; text-align: right; }
+        audio { max-width: 200px; height: 32px; border-radius: 20px; }
+        .online-dot { width: 8px; height: 8px; background: #43a047; border-radius: 50%; display: inline-block; margin-left: 6px; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #242f3a; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #2c7df7; border-radius: 10px; }
+        .channel-admin-list { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+        .channel-admin-badge { background: #2b5278; padding: 4px 10px; border-radius: 20px; font-size: 12px; display: inline-flex; align-items: center; gap: 5px; }
+        .remove-admin { cursor: pointer; color: #e53935; margin-left: 5px; }
     </style>
 </head>
 <body>
-<div id="auth" class="app">
+<div id="auth" class="app-container">
     <div class="logo">
         <img src="https://s10.iimage.su/s/27/gy0tHmGxULs5TllsSXdTv4Zo5UCO3r62Z5Dd2I399.png" alt="Toxilisk">
         <h1>Toxilisk</h1>
     </div>
-    <h2>Вход</h2>
-    <input type="text" id="loginUser" placeholder="Логин"><br><br>
-    <input type="password" id="loginPass" placeholder="Пароль"><br><br>
-    <button id="loginBtn">Войти</button>
+    <div class="tabs-auth">
+        <div class="tab-auth active" data-auth="login">Вход</div>
+        <div class="tab-auth" data-auth="register">Регистрация</div>
+    </div>
+    <div id="loginForm">
+        <input type="text" id="loginUser" placeholder="Логин" autocomplete="off"><br><br>
+        <input type="password" id="loginPass" placeholder="Пароль"><br><br>
+        <button id="loginBtn">Войти</button>
+    </div>
+    <div id="registerForm" style="display:none">
+        <input type="text" id="regUser" placeholder="Логин" autocomplete="off"><br><br>
+        <input type="password" id="regPass" placeholder="Пароль"><br><br>
+        <input type="password" id="regPass2" placeholder="Повторите пароль"><br><br>
+        <button id="registerBtn">Зарегистрироваться</button>
+    </div>
     <div id="error" class="error"></div>
 </div>
 
-<div id="app" class="app" style="display:none">
+<div id="app" class="app-container" style="display:none">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <img src="https://s10.iimage.su/s/27/gy0tHmGxULs5TllsSXdTv4Zo5UCO3r62Z5Dd2I399.png" style="width: 40px; height: 40px; border-radius: 50%;">
-            <strong>Toxilisk</strong>
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <img src="https://s10.iimage.su/s/27/gy0tHmGxULs5TllsSXdTv4Zo5UCO3r62Z5Dd2I399.png" style="width: 44px; height: 44px; border-radius: 50%;">
+            <div><strong style="font-size: 18px;">Toxilisk</strong><div><span id="userCoins">💰 0</span> <span id="userLevel">🎯 Lv.1</span></div></div>
         </div>
-        <div>
-            <span id="userName"></span>
-            <button id="adminBtn" class="admin-btn" style="display:none">👑 Админ</button>
-            <button id="logoutBtn">Выйти</button>
-        </div>
+        <div><span id="userName"></span><button id="adminBtn" class="admin-btn" style="display:none">👑 Админ</button><button id="logoutBtn">🚪 Выйти</button></div>
     </div>
-    <div class="flex" style="margin: 10px 0;">
+    <div class="flex" style="margin: 12px 0;">
         <div class="tab active" data-tab="contacts">💬 Контакты</div>
         <div class="tab" data-tab="channels">📢 Каналы</div>
         <div class="tab" data-tab="gifts">🎁 Подарки</div>
+        <div class="tab" data-tab="profile">👤 Профиль</div>
     </div>
     <div id="contactsPanel"><div id="contactsList"></div></div>
-    <div id="channelsPanel" style="display:none"><div id="channelsList"></div><button id="createChannelBtn" style="margin-top:10px;">+ Создать канал</button></div>
-    <div id="giftsPanel" style="display:none"><div id="giftsListPanel" style="display: flex; flex-wrap: wrap;"></div></div>
-    <h4 id="chatTitle">Выберите чат</h4>
+    <div id="channelsPanel" style="display:none"><div id="channelsList"></div><button id="createChannelBtn" style="margin-top:12px;">+ Создать канал</button></div>
+    <div id="giftsPanel" style="display:none"><div id="giftsListPanel" style="display: flex; flex-wrap: wrap; justify-content: center;"></div></div>
+    <div id="profilePanel" style="display:none">
+        <div style="text-align: center;">
+            <div id="profileAvatar" style="font-size: 60px;">👤</div>
+            <h3 id="profileDisplayName"></h3>
+            <p>@<span id="profileUsername"></span></p>
+            <p>💰 Монеты: <span id="profileCoins"></span></p>
+            <p>🎯 Уровень: <span id="profileLevel"></span></p>
+            <div id="profileGifts"></div>
+            <button id="editProfileBtn" style="margin-top: 12px;">✏️ Редактировать</button>
+        </div>
+    </div>
+    <h4 id="chatTitle" style="margin-top: 12px;">Выберите чат</h4>
     <div id="messages" class="messages"></div>
     <div class="flex">
         <button id="voiceBtn" class="voice-btn">🎤</button>
@@ -121,10 +163,28 @@
 </div>
 
 <div id="adminModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:1000; overflow:auto;">
-    <div style="background:#17212b; margin:30px auto; padding:20px; max-width:800px; border-radius:20px; max-height:90vh; overflow-y:auto;">
-        <h3>👑 АДМИН-ПАНЕЛЬ (50+ функций)</h3>
+    <div style="background:#17212b; margin:30px auto; padding:20px; max-width:900px; border-radius:28px; max-height:90vh; overflow-y:auto;">
+        <h3>👑 АДМИН-ПАНЕЛЬ</h3>
         <div id="adminContent"></div>
         <button id="closeAdminBtn" style="margin-top:20px;">Закрыть</button>
+    </div>
+</div>
+
+<div id="channelProfileModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:1100;">
+    <div style="background:#17212b; margin:50px auto; padding:20px; max-width:500px; border-radius:28px;">
+        <h3 id="channelProfileName"></h3>
+        <p id="channelProfileDesc"></p>
+        <p>👥 Подписчиков: <span id="channelProfileSubs"></span></p>
+        <p>👑 Премиум: <span id="channelProfilePremium"></span></p>
+        <p>✓ Верифицирован: <span id="channelProfileVerified"></span></p>
+        <div><h4>Администраторы канала:</h4><div id="channelAdminsList"></div></div>
+        <div id="channelAdminControls" style="margin-top:15px; display:none;">
+            <input type="text" id="addAdminInput" placeholder="ID пользователя">
+            <button id="addAdminBtn">➕ Добавить админа</button>
+            <select id="writeAccessSelect"><option value="all">Все могут писать</option><option value="admins">Только админы</option><option value="owner">Только владелец</option></select>
+            <button id="setWriteAccessBtn">Сохранить права</button>
+        </div>
+        <button id="closeChannelProfile" style="margin-top:15px;">Закрыть</button>
     </div>
 </div>
 
@@ -139,13 +199,13 @@
 
     function connectWebSocket() {
         ws = new WebSocket(`wss://${location.host}`);
-        ws.onopen = () => console.log('✅ WS');
+        ws.onopen = () => console.log('✅ WebSocket подключен');
         ws.onmessage = (e) => {
             const data = JSON.parse(e.data);
             if (data.type === 'new_message') {
                 if (currentChat && (data.message.fromUserId === currentChat.id || data.message.toId === currentChat.id)) loadMessages(currentChat.id);
                 loadUsers(); renderContacts(); renderChannels();
-            }
+            } else if (data.type === 'announcement') alert(`📢 ${data.text}`);
         };
         ws.onclose = () => setTimeout(connectWebSocket, 2000);
     }
@@ -159,8 +219,8 @@
         const contacts = users.filter(u => u.id !== currentUser.id);
         document.getElementById('contactsList').innerHTML = contacts.map(u => `
             <div class="contact" data-id="${u.id}">
-                <div><strong>${u.displayName}</strong> @${u.username} ${u.verified ? '✓' : ''} ${u.premium ? '⭐' : ''}</div>
-                <div>${u.role === 'admin' ? '👑' : u.role === 'moderator' ? '🛡️' : ''}</div>
+                <div><strong>${escapeHtml(u.displayName)}</strong> @${escapeHtml(u.username)} ${u.verified ? '✓' : ''} ${u.premium ? '⭐' : ''}</div>
+                <div><span class="role-badge">${u.role}</span></div>
             </div>
         `).join('');
         document.querySelectorAll('.contact').forEach(el => el.addEventListener('click', () => openChat('user', parseInt(el.dataset.id))));
@@ -170,11 +230,12 @@
         await loadChannels();
         document.getElementById('channelsList').innerHTML = channels.map(c => `
             <div class="channel" data-id="${c.id}">
-                <div>#${c.name} ${c.verified ? '✓' : ''} ${c.premium ? '👑' : ''}</div>
+                <div>#${escapeHtml(c.name)} ${c.verified ? '✓' : ''} ${c.premium ? '👑' : ''}</div>
                 <div>👥 ${c.subscribers?.length || 0}</div>
             </div>
         `).join('');
         document.querySelectorAll('.channel').forEach(el => el.addEventListener('click', () => openChat('channel', parseInt(el.dataset.id))));
+        document.querySelectorAll('.channel').forEach(el => el.addEventListener('contextmenu', (e) => { e.preventDefault(); showChannelProfile(parseInt(el.dataset.id)); }));
     }
 
     async function openChat(type, id) {
@@ -190,10 +251,8 @@
             name = c.name;
             currentChat = { type: 'channel', id, name };
         }
-        document.getElementById('chatTitle').innerHTML = `Чат с ${name}`;
-        const data = await api(`/api/messages?type=${type}&id=${id}`);
-        messages = data;
-        renderMessages();
+        document.getElementById('chatTitle').innerHTML = `Чат с ${escapeHtml(name)}`;
+        await loadMessages(id);
     }
 
     function renderMessages() {
@@ -201,9 +260,10 @@
         if (!container) return;
         container.innerHTML = messages.map(m => {
             const isOut = m.fromUserId === currentUser.id;
-            let content = m.text || '';
+            const time = new Date(m.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+            let content = escapeHtml(m.text) || '';
             if (m.isVoice) content = `🎤 Голосовое <audio controls src="${m.voiceUrl}"></audio>`;
-            return `<div class="message ${isOut ? 'outgoing' : 'incoming'}">${content}</div>`;
+            return `<div class="message ${isOut ? 'outgoing' : 'incoming'}">${content}<div class="message-time">${time}</div></div>`;
         }).join('');
         container.scrollTop = container.scrollHeight;
     }
@@ -213,7 +273,7 @@
         if (!currentChat) return;
         ws.send(JSON.stringify({ type: 'message', chatType: currentChat.type, fromUserId: currentUser.id, toId: currentChat.id, text: text || '', isVoice, voiceUrl }));
         if (!isVoice) document.getElementById('msgInput').value = '';
-        setTimeout(() => loadMessages(currentChat.id), 100);
+        setTimeout(() => loadMessages(currentChat.id), 50);
     }
 
     async function startRecording() {
@@ -235,53 +295,96 @@
             document.getElementById('voiceBtn').classList.add('recording');
             document.getElementById('voiceBtn').innerText = '⏹️';
             setTimeout(() => { if (mediaRecorder?.state === 'recording') stopRecording(); }, 30000);
-        } catch(e) { alert('Нет микрофона'); }
+        } catch(e) { alert('Нет доступа к микрофону'); }
     }
     function stopRecording() { if (mediaRecorder?.state === 'recording') mediaRecorder.stop(); isRecording = false; document.getElementById('voiceBtn').classList.remove('recording'); document.getElementById('voiceBtn').innerText = '🎤'; }
 
     async function showGifts() {
-        const gifts = [{ emoji: '🎂', name: 'Торт', id: 1 }, { emoji: '💐', name: 'Цветы', id: 2 }, { emoji: '🧸', name: 'Мишка', id: 3 }, { emoji: '💎', name: 'Драгоценность', id: 4 }, { emoji: '🎮', name: 'Игра', id: 5 }, { emoji: '❤️', name: 'Сердце', id: 6 }];
-        document.getElementById('giftsListPanel').innerHTML = gifts.map(g => `<div class="gift-item" data-id="${g.id}" data-emoji="${g.emoji}" data-name="${g.name}"><div style="font-size:48px;">${g.emoji}</div><div>${g.name}</div></div>`).join('');
+        const gifts = [{ emoji: '🎂', name: 'Торт', id: 1, price: 50 }, { emoji: '💐', name: 'Цветы', id: 2, price: 30 }, { emoji: '🧸', name: 'Мишка', id: 3, price: 100 }, { emoji: '💎', name: 'Драгоценность', id: 4, price: 200 }, { emoji: '🎮', name: 'Игра', id: 5, price: 150 }, { emoji: '❤️', name: 'Сердце', id: 6, price: 20 }];
+        document.getElementById('giftsListPanel').innerHTML = gifts.map(g => `<div class="gift-item" data-id="${g.id}" data-emoji="${g.emoji}" data-name="${g.name}" data-price="${g.price}"><div style="font-size:48px;">${g.emoji}</div><div>${g.name}</div><div>${g.price}💰</div></div>`).join('');
         document.querySelectorAll('.gift-item').forEach(el => {
             el.addEventListener('click', async () => {
                 if (currentChat && currentChat.type === 'user') {
-                    await api('/api/send-gift', { fromUserId: currentUser.id, toUserId: currentChat.id, giftId: parseInt(el.dataset.id) });
-                    await sendMessage(`🎁 Подарок: ${el.dataset.name} ${el.dataset.emoji}`);
+                    const res = await api('/api/send-gift', { fromUserId: currentUser.id, toUserId: currentChat.id, giftId: parseInt(el.dataset.id) });
+                    if (res.error) alert(res.error);
+                    else { await sendMessage(`🎁 Подарок: ${el.dataset.name} ${el.dataset.emoji}`); loadUsers(); updateProfileUI(); }
                 } else alert('Подарки только пользователям');
             });
         });
     }
 
+    function updateProfileUI() {
+        document.getElementById('userName').innerHTML = `${currentUser.displayName} ${currentUser.verified ? '✓' : ''} ${currentUser.premium ? '⭐' : ''}`;
+        document.getElementById('userCoins').innerHTML = `💰 ${currentUser.coins || 0}`;
+        document.getElementById('userLevel').innerHTML = `🎯 Lv.${currentUser.level || 1}`;
+        document.getElementById('profileDisplayName').innerText = currentUser.displayName;
+        document.getElementById('profileUsername').innerText = currentUser.username;
+        document.getElementById('profileCoins').innerText = currentUser.coins || 0;
+        document.getElementById('profileLevel').innerText = currentUser.level || 1;
+        document.getElementById('profileAvatar').innerText = currentUser.avatar || '👤';
+    }
+
+    async function showProfile() {
+        const userData = users.find(u => u.id === currentUser.id);
+        document.getElementById('profileGifts').innerHTML = (userData?.gifts || []).map(g => `<div style="background:#242f3a; padding:8px; border-radius:16px; margin:5px;">${g.emoji} ${g.name} от @${g.from}</div>`).join('') || '<div>Нет подарков</div>';
+        updateProfileUI();
+    }
+
+    async function showChannelProfile(channelId) {
+        const channel = channels.find(c => c.id === channelId);
+        if (!channel) return;
+        document.getElementById('channelProfileName').innerHTML = `#${escapeHtml(channel.name)}`;
+        document.getElementById('channelProfileDesc').innerHTML = channel.description || 'Нет описания';
+        document.getElementById('channelProfileSubs').innerHTML = channel.subscribers?.length || 0;
+        document.getElementById('channelProfilePremium').innerHTML = channel.premium ? 'Да' : 'Нет';
+        document.getElementById('channelProfileVerified').innerHTML = channel.verified ? 'Да' : 'Нет';
+        const admins = channel.admins || [];
+        const adminUsers = users.filter(u => admins.includes(u.id));
+        document.getElementById('channelAdminsList').innerHTML = adminUsers.map(u => `<div class="channel-admin-badge">@${u.username} ${(channel.ownerId === currentUser.id || currentUser.role === 'owner' || currentUser.role === 'admin') ? `<span class="remove-admin" onclick="removeChannelAdmin(${channel.id}, ${u.id})">✖️</span>` : ''}</div>`).join('') || 'Нет администраторов';
+        const controls = document.getElementById('channelAdminControls');
+        controls.style.display = (channel.ownerId === currentUser.id || currentUser.role === 'owner' || currentUser.role === 'admin') ? 'block' : 'none';
+        document.getElementById('writeAccessSelect').value = channel.writeAccess || 'all';
+        document.getElementById('addAdminBtn').onclick = () => { const uid = parseInt(document.getElementById('addAdminInput').value); if (uid) addChannelAdmin(channel.id, uid); };
+        document.getElementById('setWriteAccessBtn').onclick = () => setChannelWriteAccess(channel.id, document.getElementById('writeAccessSelect').value);
+        document.getElementById('channelProfileModal').style.display = 'block';
+    }
+
+    async function addChannelAdmin(channelId, userId) { await api('/api/channel/add-admin', { channelId, userId, adminId: currentUser.id }); loadChannels(); showChannelProfile(channelId); }
+    async function removeChannelAdmin(channelId, userId) { await api('/api/channel/remove-admin', { channelId, userId, adminId: currentUser.id }); loadChannels(); showChannelProfile(channelId); }
+    async function setChannelWriteAccess(channelId, access) { await api('/api/channel/set-write-access', { channelId, access, adminId: currentUser.id }); loadChannels(); }
+
     async function renderAdmin() {
         await loadUsers(); await loadChannels();
-        const actions = [
-            { name: '🔨 Бан', act: 'ban' }, { name: '🔓 Разбан', act: 'unban' }, { name: '✓ Верифицировать', act: 'verify' }, { name: '✗ Снять верификацию', act: 'unverify' },
-            { name: '⭐ Дать премиум', act: 'premium' }, { name: '⭐ Снять премиум', act: 'unpremium' }, { name: '👑 Сделать админом', act: 'makeAdmin' },
-            { name: '🛡️ Сделать модератором', act: 'makeModerator' }, { name: '👤 Сделать юзером', act: 'makeUser' }, { name: '🚫 Ограничить', act: 'restrict' },
-            { name: '🔓 Снять ограничение', act: 'unrestrict' }, { name: '🔇 Замутить', act: 'mute' }, { name: '🔊 Размутить', act: 'unmute' },
-            { name: '⚠️ Выдать варн', act: 'warn' }, { name: '👢 Кикнуть', act: 'kick' }, { name: '💰 Дать монеты', act: 'giveCoins' },
-            { name: '💸 Забрать монеты', act: 'takeCoins' }, { name: '💎 Установить монеты', act: 'setCoins' }, { name: '✨ Дать опыт', act: 'giveExp' },
-            { name: '📈 Установить уровень', act: 'setLevel' }, { name: '🔄 Сбросить пользователя', act: 'resetUser' }, { name: '🗑️ Удалить сообщения пользователя', act: 'deleteUserMessages' }
-        ];
-        const channelActions = [
-            { name: '✓ Верифицировать канал', act: 'channelVerify' }, { name: '✗ Снять верификацию', act: 'channelUnverify' },
-            { name: '👑 Премиум канал', act: 'channelPremium' }, { name: '👑 Снять премиум', act: 'channelUnpremium' },
-            { name: '➕ +100 сабов', act: 'addSubs100' }, { name: '➕ +1000 сабов', act: 'addSubs1000' }, { name: '➕ +10000 сабов', act: 'addSubs10000' },
-            { name: '🗑️ Удалить канал', act: 'deleteChannel' }
-        ];
-        const globalActions = [
-            { name: '🗑️ Удалить все сообщения', act: 'deleteAllMessages' }, { name: '🧹 Очистить все сообщения', act: 'clearAllMessages' },
-            { name: '🔄 Полный сброс', act: 'resetAll' }, { name: '📢 Сделать объявление', act: 'announce' },
-            { name: '💾 Экспорт пользователей', act: 'exportUsers' }, { name: '💾 Экспорт сообщений', act: 'exportMessages' },
-            { name: '🔄 Сбросить каналы', act: 'resetChannels' }, { name: '🎁 Сбросить подарки', act: 'resetGifts' }
-        ];
-        let html = `<div class="admin-section"><h4>👥 Пользователи</h4>${users.map(u => `<div><strong>${u.displayName}</strong> @${u.username} [${u.role}] ${u.verified ? '✓' : ''} ${u.premium ? '⭐' : ''} ${u.banned ? '🔨' : ''}
-            ${actions.map(a => `<button onclick="adminAction('${a.act}', ${u.id})">${a.name}</button>`).join(' ')}
-            </div>`).join('')}</div>`;
-        html += `<div class="admin-section"><h4>📢 Каналы</h4>${channels.map(c => `<div><strong>#${c.name}</strong> (${c.subscribers?.length || 0} сабов) ${c.verified ? '✓' : ''} ${c.premium ? '👑' : ''}
-            ${channelActions.map(a => `<button onclick="adminAction('${a.act}', ${c.id})">${a.name}</button>`).join(' ')}
-            </div>`).join('')}</div>`;
-        html += `<div class="admin-section"><h4>⚙️ Глобальные</h4>${globalActions.map(a => `<button onclick="adminAction('${a.act}')">${a.name}</button>`).join(' ')}</div>`;
+        let html = `<div class="admin-section"><h4>👥 Пользователи</h4>`;
+        for (let u of users) {
+            html += `<div style="margin-bottom:12px; padding:8px; background:#242f3a; border-radius:16px;"><strong>${escapeHtml(u.displayName)}</strong> @${u.username} [${u.role}] ${u.verified ? '✓' : ''} ${u.premium ? '⭐' : ''} ${u.banned ? '🔨' : ''} | 💰${u.coins || 0} 🎯Lv${u.level || 1}
+            <div style="margin-top:8px; display:flex; flex-wrap:wrap; gap:6px;">
+            <button onclick="adminAction('ban',${u.id})">🔨 Бан</button><button onclick="adminAction('unban',${u.id})">🔓 Разбан</button>
+            <button onclick="adminAction('verify',${u.id})">✓ Вериф</button><button onclick="adminAction('unverify',${u.id})">✗ Снять</button>
+            <button onclick="adminAction('premium',${u.id})">⭐ Премиум</button><button onclick="adminAction('unpremium',${u.id})">⭐ Снять</button>
+            <button onclick="adminAction('makeAdmin',${u.id})">👑 Админ</button><button onclick="adminAction('makeModerator',${u.id})">🛡️ Модер</button>
+            <button onclick="adminAction('restrict',${u.id})">🚫 Ограничить</button><button onclick="adminAction('giveCoins',${u.id})">💰 +100</button>
+            <button onclick="adminAction('takeCoins',${u.id})">💸 -100</button><button onclick="adminAction('giveExp',${u.id})">✨ +100 exp</button>
+            </div></div>`;
+        }
+        html += `</div><div class="admin-section"><h4>📢 Каналы</h4>`;
+        for (let c of channels) {
+            html += `<div style="margin-bottom:12px; padding:8px; background:#242f3a; border-radius:16px;"><strong>#${escapeHtml(c.name)}</strong> | 👥 ${c.subscribers?.length || 0} сабов | ${c.verified ? '✓' : ''} ${c.premium ? '👑' : ''}
+            <div style="margin-top:8px; display:flex; flex-wrap:wrap; gap:6px;">
+            <button onclick="adminAction('channelVerify',${c.id})">${c.verified ? 'Снять ✓' : 'Дать ✓'}</button>
+            <button onclick="adminAction('channelPremium',${c.id})">${c.premium ? 'Снять 👑' : 'Дать 👑'}</button>
+            <button onclick="adminAction('addSubs100',${c.id})">➕ +100 сабов</button>
+            <button onclick="adminAction('addSubs1000',${c.id})">➕ +1000 сабов</button>
+            <button onclick="adminAction('deleteChannel',${c.id})">🗑️ Удалить</button>
+            </div></div>`;
+        }
+        html += `</div><div class="admin-section"><h4>⚙️ Глобальные</h4><div style="display:flex; flex-wrap:wrap; gap:8px;">
+        <button onclick="adminAction('deleteAllMessages')">🗑️ Удалить все сообщения</button>
+        <button onclick="adminAction('resetAll')">🔄 Полный сброс</button>
+        <button onclick="adminAction('announce')">📢 Объявление</button>
+        <button onclick="adminAction('globalMute')">🔇 Глобальный мут</button>
+        <button onclick="adminAction('globalUnmute')">🔊 Глобальный размут</button>
+        </div></div>`;
         document.getElementById('adminContent').innerHTML = html;
         document.getElementById('adminModal').style.display = 'block';
     }
@@ -290,55 +393,59 @@
         let body = {};
         if (action === 'giveCoins') body = { userId: id, amount: 100 };
         else if (action === 'takeCoins') body = { userId: id, amount: 100 };
-        else if (action === 'setCoins') body = { userId: id, amount: parseInt(prompt('Сколько монет?')) || 0 };
         else if (action === 'giveExp') body = { userId: id, amount: 100 };
-        else if (action === 'setLevel') body = { userId: id, amount: parseInt(prompt('Какой уровень?')) || 1 };
         else if (action === 'announce') body = { text: prompt('Текст объявления:') };
-        else if (action === 'exportUsers') { const data = await api(`/api/admin/${action}`); alert(JSON.stringify(data.data)); return; }
-        else if (action === 'exportMessages') { const data = await api(`/api/admin/${action}`); alert(JSON.stringify(data.data)); return; }
         else if (id) body = { userId: id, channelId: id };
         await api(`/api/admin/${action}`, body);
-        renderAdmin(); renderContacts(); renderChannels();
+        renderAdmin(); renderContacts(); renderChannels(); loadUsers(); if (currentUser) updateProfileUI();
     };
 
     async function login() {
-        const username = document.getElementById('loginUser').value;
+        const username = document.getElementById('loginUser').value.trim();
         const password = document.getElementById('loginPass').value;
         const data = await api('/api/login', { username, password });
         if (data.error) { document.getElementById('error').innerText = data.error; return; }
         currentUser = data;
+        localStorage.setItem('toxilisk_user', JSON.stringify(currentUser));
         document.getElementById('auth').style.display = 'none';
         document.getElementById('app').style.display = 'block';
-        document.getElementById('userName').innerHTML = `${currentUser.displayName} ${currentUser.verified ? '✓' : ''} ${currentUser.premium ? '⭐' : ''}`;
+        updateProfileUI();
         if (currentUser.role === 'owner' || currentUser.role === 'admin') document.getElementById('adminBtn').style.display = 'inline-block';
         connectWebSocket();
-        await renderContacts(); await renderChannels(); showGifts();
+        await renderContacts(); await renderChannels(); await showGifts(); await showProfile();
         setInterval(() => { if (currentChat) loadMessages(currentChat.id); renderContacts(); }, 2000);
     }
 
-    document.getElementById('loginBtn').onclick = login;
-    document.getElementById('logoutBtn').onclick = () => location.reload();
-    document.getElementById('sendBtn').onclick = () => sendMessage(document.getElementById('msgInput').value);
+    async function register() {
+        const username = document.getElementById('regUser').value.trim();
+        const pass = document.getElementById('regPass').value;
+        const pass2 = document.getElementById('regPass2').value;
+        if (!username || !pass) { document.getElementById('error').innerText = 'Заполните все поля'; return; }
+        if (pass !== pass2) { document.getElementById('error').innerText = 'Пароли не совпадают'; return; }
+        const data = await api('/api/register', { username, password: pass });
+        if (data.error) { document.getElementById('error').innerText = data.error; return; }
+        document.getElementById('error').innerText = '✅ Регистрация успешна! Теперь войдите.';
+        document.querySelector('.tab-auth[data-auth="login"]').click();
+        document.getElementById('loginUser').value = username;
+    }
+
+    function logout() { localStorage.removeItem('toxilisk_user'); if (ws) ws.close(); location.reload(); }
+    function escapeHtml(str) { return String(str || '').replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
+
+    document.querySelectorAll('.tab-auth').forEach(tab => { tab.onclick = () => { document.querySelectorAll('.tab-auth').forEach(t => t.classList.remove('active')); tab.classList.add('active'); const isLogin = tab.dataset.auth === 'login'; document.getElementById('loginForm').style.display = isLogin ? 'block' : 'none'; document.getElementById('registerForm').style.display = isLogin ? 'none' : 'block'; document.getElementById('error').innerText = ''; }; });
+    document.querySelectorAll('.tab').forEach(tab => { tab.onclick = () => { document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); tab.classList.add('active'); document.getElementById('contactsPanel').style.display = tab.dataset.tab === 'contacts' ? 'block' : 'none'; document.getElementById('channelsPanel').style.display = tab.dataset.tab === 'channels' ? 'block' : 'none'; document.getElementById('giftsPanel').style.display = tab.dataset.tab === 'gifts' ? 'block' : 'none'; document.getElementById('profilePanel').style.display = tab.dataset.tab === 'profile' ? 'block' : 'none'; if (tab.dataset.tab === 'gifts') showGifts(); if (tab.dataset.tab === 'profile') showProfile(); }; });
+    document.getElementById('loginBtn').onclick = login; document.getElementById('registerBtn').onclick = register;
+    document.getElementById('logoutBtn').onclick = logout; document.getElementById('sendBtn').onclick = () => sendMessage(document.getElementById('msgInput').value);
     document.getElementById('msgInput').onkeypress = e => { if (e.key === 'Enter') sendMessage(e.target.value); };
     document.getElementById('voiceBtn').onclick = () => isRecording ? stopRecording() : startRecording();
-    document.getElementById('giftSendBtn').onclick = showGifts;
-    document.getElementById('adminBtn').onclick = renderAdmin;
-    document.getElementById('closeAdminBtn').onclick = () => document.getElementById('adminModal').style.display = 'none';
-    document.getElementById('createChannelBtn').onclick = async () => {
-        const name = prompt('Название канала:');
-        if (name) await api('/api/channels', { name, ownerId: currentUser.id });
-        renderChannels();
-    };
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.onclick = () => {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            document.getElementById('contactsPanel').style.display = tab.dataset.tab === 'contacts' ? 'block' : 'none';
-            document.getElementById('channelsPanel').style.display = tab.dataset.tab === 'channels' ? 'block' : 'none';
-            document.getElementById('giftsPanel').style.display = tab.dataset.tab === 'gifts' ? 'block' : 'none';
-            if (tab.dataset.tab === 'gifts') showGifts();
-        };
-    });
+    document.getElementById('giftSendBtn').onclick = () => { document.querySelector('.tab[data-tab="gifts"]').click(); showGifts(); };
+    document.getElementById('adminBtn').onclick = renderAdmin; document.getElementById('closeAdminBtn').onclick = () => document.getElementById('adminModal').style.display = 'none';
+    document.getElementById('createChannelBtn').onclick = async () => { const name = prompt('Название канала:'); if (name) await api('/api/channels', { name, ownerId: currentUser.id }); renderChannels(); };
+    document.getElementById('editProfileBtn').onclick = async () => { const newName = prompt('Новое имя:', currentUser.displayName); if (newName) { await api('/api/update-profile', { userId: currentUser.id, displayName: newName }); currentUser.displayName = newName; updateProfileUI(); renderContacts(); } };
+    document.getElementById('closeChannelProfile').onclick = () => document.getElementById('channelProfileModal').style.display = 'none';
+
+    const saved = localStorage.getItem('toxilisk_user');
+    if (saved) { try { currentUser = JSON.parse(saved); document.getElementById('auth').style.display = 'none'; document.getElementById('app').style.display = 'block'; updateProfileUI(); connectWebSocket(); renderContacts(); renderChannels(); showGifts(); showProfile(); setInterval(() => { if (currentChat) loadMessages(currentChat.id); renderContacts(); }, 2000); } catch(e) {} }
 </script>
 </body>
 </html>
