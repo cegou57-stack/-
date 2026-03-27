@@ -189,6 +189,9 @@
 </div>
 
 <script>
+    if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+}
     let currentUser = null, currentChat = null, users = [], messages = [], channels = [], ws = null;
     let mediaRecorder = null, audioChunks = [], isRecording = false;
 
